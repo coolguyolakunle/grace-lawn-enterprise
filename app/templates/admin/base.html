@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Admin{% endblock %} — Grace Lawn Enterprise</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico')}}" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'deep-green': '#1a4a2e',
+            'mid-green':  '#2d7a4f',
+            'light-green':'#5bbf85',
+            'pale-green': '#e8f5ee',
+          },
+          fontFamily: {
+            display: ['Playfair Display','serif'],
+            body:    ['Lato','sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family:'Lato',sans-serif; }
+    .sidebar-link { display:flex; align-items:center; gap:12px; padding:10px 16px; border-radius:10px; font-size:.85rem; font-weight:700; letter-spacing:.04em; text-transform:uppercase; transition:background .2s,color .2s; color:#a7c9b5; }
+    .sidebar-link:hover { background:rgba(91,191,133,.12); color:#fff; }
+    .sidebar-link.active { background:rgba(91,191,133,.18); color:#5bbf85; }
+    .sidebar-link i { width:18px; text-align:center; }
+    .flash-success { background:#d1fae5; border:1px solid #6ee7b7; color:#065f46; padding:10px 16px; border-radius:10px; font-size:.85rem; margin-bottom:1rem; }
+    .flash-error   { background:#fee2e2; border:1px solid #fca5a5; color:#991b1b; padding:10px 16px; border-radius:10px; font-size:.85rem; margin-bottom:1rem; }
+    .flash-warning { background:#fef3c7; border:1px solid #fcd34d; color:#92400e; padding:10px 16px; border-radius:10px; font-size:.85rem; margin-bottom:1rem; }
+    /* Sidebar mobile */
+    #sidebar { transition: transform .3s cubic-bezier(.4,0,.2,1); }
+    @media(max-width:768px){ #sidebar { position:fixed; left:0; top:0; bottom:0; z-index:50; transform:translateX(-100%); } #sidebar.open { transform:translateX(0); } }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+<!-- Mobile overlay -->
+<div id="sidebar-overlay" class="fixed inset-0 bg-black/40 z-40 hidden md:hidden" onclick="closeSidebar()"></div>
+
+<!-- ── SIDEBAR ── -->
+<aside id="sidebar" class="w-64 bg-deep-green min-h-screen flex flex-col fixed top-0 left-0 bottom-0 z-50 md:z-30">
+  <!-- Logo -->
+  <div class="p-4 border-b border-white/10 flex justify-center">
+    <a href="{{ url_for('main.index') }}" target="_blank">
+      
+      <div class="bg-white rounded-xl px-6 py-7 shadow-sm flex items-center justify-center">
+        <img 
+          src="{{ url_for('static', filename='img/GraceLawn.png') }}" 
+          alt="Grace Lawn" 
+          class="h-24 w-auto object-contain"
+        />
+      </div>
+    </a>
+  </div>
+
+  <!-- Nav -->
+  <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
+    <p class="text-[10px] text-white/30 uppercase tracking-widest px-3 mb-2 mt-2">Main</p>
+    <a href="{{ url_for('admin.dashboard') }}" class="sidebar-link {% if request.endpoint == 'admin.dashboard' %}active{% endif %}">
+      <i class="fas fa-chart-pie"></i> Dashboard
+    </a>
+    <a href="{{ url_for('admin.messages') }}" class="sidebar-link {% if request.endpoint in ['admin.messages','admin.read_message'] %}active{% endif %}">
+      <i class="fas fa-envelope"></i> Messages
+      {% set unread = unread_count|default(0) %}
+      {% if unread > 0 %}<span class="ml-auto bg-red-500 text-white text-[10px] font-700 px-2 py-0.5 rounded-full">{{ unread }}</span>{% endif %}
+    </a>
+
+    <p class="text-[10px] text-white/30 uppercase tracking-widest px-3 mb-2 mt-4">Content</p>
+    <a href="{{ url_for('admin.gallery') }}" class="sidebar-link {% if request.endpoint == 'admin.gallery' %}active{% endif %}">
+      <i class="fas fa-images"></i> Gallery
+    </a>
+    <a href="{{ url_for('admin.content') }}" class="sidebar-link {% if request.endpoint == 'admin.content' %}active{% endif %}">
+      <i class="fas fa-pen-to-square"></i> Site Content
+    </a>
+
+    <p class="text-[10px] text-white/30 uppercase tracking-widest px-3 mb-2 mt-4">Account</p>
+    <a href="{{ url_for('admin.settings') }}" class="sidebar-link {% if request.endpoint == 'admin.settings' %}active{% endif %}">
+      <i class="fas fa-gear"></i> Settings
+    </a>
+    <a href="{{ url_for('main.index') }}" target="_blank" class="sidebar-link">
+      <i class="fas fa-globe"></i> View Website
+    </a>
+    <a href="{{ url_for('admin.logout') }}" class="sidebar-link text-red-300 hover:text-red-200 hover:bg-red-500/10 mt-4">
+      <i class="fas fa-right-from-bracket"></i> Logout
+    </a>
+  </nav>
+
+  <div class="p-4 border-t border-white/10 text-xs text-white/30 text-center">
+    &copy; 2026 Grace Lawn Enterprise
+  </div>
+</aside>
+
+<!-- ── MAIN ── -->
+<div class="md:ml-64 flex flex-col min-h-screen">
+  <!-- Top bar -->
+  <header class="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between sticky top-0 z-20 shadow-sm">
+    <div class="flex items-center gap-4">
+      <button onclick="toggleSidebar()" class="md:hidden text-gray-500 hover:text-deep-green">
+        <i class="fas fa-bars text-lg"></i>
+      </button>
+      <h1 class="font-display text-xl font-700 text-deep-green">{% block page_title %}Dashboard{% endblock %}</h1>
+    </div>
+    <div class="flex items-center gap-3">
+      <span class="text-sm text-gray-500 font-body hidden sm:block">Welcome, <strong class="text-deep-green">{{ current_user.username }}</strong></span>
+      <div class="w-9 h-9 rounded-full bg-pale-green flex items-center justify-center">
+        <i class="fas fa-user text-mid-green text-sm"></i>
+      </div>
+    </div>
+  </header>
+
+  <!-- Flash messages -->
+  <div class="px-6 pt-4">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="flash-{{ category }}">
+          <i class="fas fa-{% if category == 'success' %}check-circle{% elif category == 'error' %}exclamation-circle{% else %}info-circle{% endif %} mr-2"></i>{{ message }}
+        </div>
+      {% endfor %}
+    {% endwith %}
+  </div>
+
+  <main class="flex-1 p-6">
+    {% block content %}{% endblock %}
+  </main>
+</div>
+
+<script>
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebar-overlay').classList.toggle('hidden');
+  }
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebar-overlay').classList.add('hidden');
+  }
+
+  // Auto-dismiss flash messages
+  setTimeout(() => {
+    document.querySelectorAll('.flash-success,.flash-error,.flash-warning').forEach(el => {
+      el.style.transition = 'opacity 0.4s';
+      el.style.opacity = '0';
+      setTimeout(() => el.remove(), 400);
+    });
+  }, 4000);
+</script>
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

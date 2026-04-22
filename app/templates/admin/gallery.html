@@ -1,0 +1,212 @@
+{% extends "admin/base.html" %}
+{% block title %}Gallery{% endblock %}
+{% block page_title %}Gallery Manager{% endblock %}
+
+{% block content %}
+<!-- Upload Panel -->
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-6">
+  <div class="px-6 py-4 border-b border-gray-100">
+    <h2 class="font-display text-lg font-700 text-deep-green">Upload New Image</h2>
+  </div>
+  <div class="p-6">
+    <form method="POST" action="{{ url_for('admin.upload_image') }}" enctype="multipart/form-data" id="upload-form">
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
+        <div class="lg:col-span-2">
+          <label class="block text-xs font-700 text-mid-green uppercase tracking-wider mb-1.5">Image File *</label>
+          <div id="drop-zone" class="border-2 border-dashed border-green-200 rounded-xl p-6 text-center cursor-pointer hover:border-mid-green hover:bg-pale-green/50 transition-all">
+            <i class="fas fa-cloud-upload-alt text-3xl text-light-green mb-2 block"></i>
+            <p class="text-sm text-gray-500 mb-1">Drag & drop or <span class="text-mid-green font-700">click to browse</span></p>
+            <p class="text-xs text-gray-400">PNG, JPG, GIF, WEBP — max 16MB</p>
+            <input type="file" name="image" id="image-input" accept="image/*" required class="hidden"/>
+            <p id="file-name" class="text-xs text-mid-green font-700 mt-2 hidden"></p>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-700 text-mid-green uppercase tracking-wider mb-1.5">Label *</label>
+          <input type="text" name="label" required placeholder="e.g. Duroc Sow"
+            class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-mid-green focus:ring-2 focus:ring-mid-green/20 transition-all"/>
+        </div>
+        <div>
+          <label class="block text-xs font-700 text-mid-green uppercase tracking-wider mb-1.5">Category *</label>
+          <select name="category" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-mid-green focus:ring-2 focus:ring-mid-green/20 transition-all">
+            <option value="animals">Animals</option>
+            <option value="farm">Farm</option>
+          </select>
+        </div>
+      </div>
+      <div class="mb-5">
+        <label class="block text-xs font-700 text-mid-green uppercase tracking-wider mb-1.5">Caption (optional)</label>
+        <input type="text" name="caption" placeholder="A short description of the image..."
+          class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-mid-green focus:ring-2 focus:ring-mid-green/20 transition-all"/>
+      </div>
+
+      <!-- Preview -->
+      <div id="img-preview" class="hidden mb-5">
+        <p class="text-xs font-700 text-mid-green uppercase tracking-wider mb-2">Preview</p>
+        <img id="preview-img" src="" alt="" class="w-40 h-40 object-cover rounded-xl border border-green-100 shadow-sm"/>
+      </div>
+
+      <button type="submit" class="bg-deep-green hover:bg-mid-green text-white font-700 uppercase tracking-widest text-sm px-8 py-3 rounded-xl transition-colors flex items-center gap-2">
+        <i class="fas fa-upload"></i> Upload Image
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Gallery Grid -->
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+  <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+    <h2 class="font-display text-lg font-700 text-deep-green">Uploaded Photos ({{ items|length }})</h2>
+    <!-- Filter tabs -->
+    <div class="flex gap-2">
+      <button onclick="filterGallery('all')" class="gf-btn active text-xs font-700 uppercase tracking-wider px-3 py-1.5 rounded-lg bg-deep-green text-white transition-all">All</button>
+      <button onclick="filterGallery('animals')" class="gf-btn text-xs font-700 uppercase tracking-wider px-3 py-1.5 rounded-lg bg-gray-100 text-gray-600 hover:bg-pale-green transition-all">Animals</button>
+      <button onclick="filterGallery('farm')" class="gf-btn text-xs font-700 uppercase tracking-wider px-3 py-1.5 rounded-lg bg-gray-100 text-gray-600 hover:bg-pale-green transition-all">Farm</button>
+      <!-- <button onclick="filterGallery('products')" class="gf-btn text-xs font-700 uppercase tracking-wider px-3 py-1.5 rounded-lg bg-gray-100 text-gray-600 hover:bg-pale-green transition-all">Products</button> -->
+    </div>
+  </div>
+
+  {% if items %}
+  <div class="p-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4" id="gallery-admin-grid">
+    {% for item in items %}
+    <div class="gallery-admin-item rounded-xl overflow-hidden border border-gray-100 shadow-sm group" data-category="{{ item.category }}">
+      <!-- Image -->
+      <div class="relative aspect-square bg-pale-green">
+        <img src="{{ item.image_url }}" alt="{{ item.label }}"
+             alt="{{ item.label }}"
+             class="w-full h-full object-cover"/>
+        <!-- Overlay -->
+        <div class="absolute inset-0 bg-deep-green/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+          <button onclick="openEdit('{{ item.id }}','{{ item.label|e }}','{{ item.category }}','{{ item.caption|e }}')"
+            class="w-9 h-9 bg-white rounded-full flex items-center justify-center text-deep-green hover:bg-light-green transition-colors text-sm">
+            <i class="fas fa-pen"></i>
+          </button>
+          <form method="POST" action="{{ url_for('admin.del_gallery_item', item_id=item.id) }}"
+            onsubmit="return confirm('Delete this image?')" class="inline">
+            <button type="submit" class="w-9 h-9 bg-white rounded-full flex items-center justify-center text-red-500 hover:bg-red-500 hover:text-white transition-colors text-sm">
+              <i class="fas fa-trash"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+      <!-- Info -->
+      <div class="p-3">
+        <p class="text-xs font-700 text-gray-800 truncate">{{ item.label }}</p>
+        <div class="flex items-center justify-between mt-1">
+          <span class="text-[10px] text-mid-green bg-pale-green px-2 py-0.5 rounded-full uppercase tracking-wider">{{ item.category }}</span>
+          <span class="text-[10px] text-gray-400">{{ item.date }}</span>
+        </div>
+        {% if item.caption %}<p class="text-[10px] text-gray-500 mt-1 truncate">{{ item.caption }}</p>{% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="py-20 text-center text-gray-400">
+    <i class="fas fa-images text-5xl mb-4 block opacity-20"></i>
+    <p class="text-lg font-display text-gray-500">No images uploaded yet</p>
+    <p class="text-sm mt-1">Upload your first image using the form above.</p>
+  </div>
+  {% endif %}
+</div>
+
+<!-- Edit Modal -->
+<div id="edit-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center px-4">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md">
+    <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+      <h3 class="font-display text-lg font-700 text-deep-green">Edit Image</h3>
+      <button onclick="closeEdit()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
+    </div>
+    <form method="POST" id="edit-form" class="p-6 space-y-4">
+      <div>
+        <label class="block text-xs font-700 text-mid-green uppercase tracking-wider mb-1.5">Label</label>
+        <input type="text" name="label" id="edit-label" required
+          class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-mid-green focus:ring-2 focus:ring-mid-green/20"/>
+      </div>
+      <div>
+        <label class="block text-xs font-700 text-mid-green uppercase tracking-wider mb-1.5">Category</label>
+        <select name="category" id="edit-category"
+          class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-mid-green focus:ring-2 focus:ring-mid-green/20">
+          <option value="animals">Animals</option>
+          <option value="farm">Farm</option>
+          <option value="products">Products</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-xs font-700 text-mid-green uppercase tracking-wider mb-1.5">Caption</label>
+        <input type="text" name="caption" id="edit-caption"
+          class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-mid-green focus:ring-2 focus:ring-mid-green/20"/>
+      </div>
+      <div class="flex gap-3 pt-2">
+        <button type="submit" class="flex-1 bg-deep-green hover:bg-mid-green text-white font-700 uppercase tracking-widest text-sm py-3 rounded-xl transition-colors">Save Changes</button>
+        <button type="button" onclick="closeEdit()" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-700 uppercase tracking-widest text-sm py-3 rounded-xl transition-colors">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  // Drop zone
+  const dropZone   = document.getElementById('drop-zone');
+  const fileInput  = document.getElementById('image-input');
+  const fileLabel  = document.getElementById('file-name');
+  const preview    = document.getElementById('img-preview');
+  const previewImg = document.getElementById('preview-img');
+
+  dropZone.addEventListener('click', () => fileInput.click());
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('border-mid-green','bg-pale-green'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('border-mid-green','bg-pale-green'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('border-mid-green','bg-pale-green');
+    const file = e.dataTransfer.files[0];
+    if (file) handleFile(file);
+  });
+  fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFile(fileInput.files[0]); });
+
+  function handleFile(file) {
+    fileLabel.textContent = file.name;
+    fileLabel.classList.remove('hidden');
+    const reader = new FileReader();
+    reader.onload = e => { previewImg.src = e.target.result; preview.classList.remove('hidden'); };
+    reader.readAsDataURL(file);
+    // Set file in input if dropped
+    const dt = new DataTransfer();
+    dt.items.add(file);
+    fileInput.files = dt.files;
+  }
+
+  // Gallery filter
+  function filterGallery(cat) {
+    document.querySelectorAll('.gf-btn').forEach(b => {
+      b.classList.remove('bg-deep-green','text-white');
+      b.classList.add('bg-gray-100','text-gray-600');
+    });
+    event.target.classList.add('bg-deep-green','text-white');
+    event.target.classList.remove('bg-gray-100','text-gray-600');
+
+    document.querySelectorAll('.gallery-admin-item').forEach(item => {
+      item.style.display = (cat === 'all' || item.dataset.category === cat) ? 'block' : 'none';
+    });
+  }
+
+  // Edit modal
+  function openEdit(id, label, category, caption) {
+    document.getElementById('edit-form').action = `/admin/gallery/${id}/edit`;
+    document.getElementById('edit-label').value    = label;
+    document.getElementById('edit-category').value = category;
+    document.getElementById('edit-caption').value  = caption;
+    document.getElementById('edit-modal').classList.remove('hidden');
+    document.getElementById('edit-modal').classList.add('flex');
+  }
+  function closeEdit() {
+    document.getElementById('edit-modal').classList.add('hidden');
+    document.getElementById('edit-modal').classList.remove('flex');
+  }
+  document.getElementById('edit-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeEdit();
+  });
+</script>
+{% endblock %}

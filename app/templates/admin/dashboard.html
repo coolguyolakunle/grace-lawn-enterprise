@@ -1,0 +1,111 @@
+{% extends "admin/base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<!-- Stats -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+  <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center gap-4">
+    <div class="w-13 h-13 rounded-xl bg-blue-50 flex items-center justify-center w-14 h-14">
+      <i class="fas fa-envelope text-blue-500 text-xl"></i>
+    </div>
+    <div>
+      <p class="text-2xl font-display font-700 text-gray-800">{{ total_messages }}</p>
+      <p class="text-xs text-gray-500 uppercase tracking-wider font-700">Total Messages</p>
+    </div>
+  </div>
+  <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center gap-4">
+    <div class="w-14 h-14 rounded-xl bg-red-50 flex items-center justify-center">
+      <i class="fas fa-envelope-open text-red-500 text-xl"></i>
+    </div>
+    <div>
+      <p class="text-2xl font-display font-700 text-gray-800">{{ unread_messages }}</p>
+      <p class="text-xs text-gray-500 uppercase tracking-wider font-700">Unread</p>
+    </div>
+  </div>
+  <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center gap-4">
+    <div class="w-14 h-14 rounded-xl bg-green-50 flex items-center justify-center">
+      <i class="fas fa-images text-mid-green text-xl"></i>
+    </div>
+    <div>
+      <p class="text-2xl font-display font-700 text-gray-800">{{ total_gallery }}</p>
+      <p class="text-xs text-gray-500 uppercase tracking-wider font-700">Gallery Photos</p>
+    </div>
+  </div>
+  <a href="{{ url_for('main.index') }}" target="_blank" class="bg-deep-green rounded-2xl p-6 shadow-sm flex items-center gap-4 hover:bg-mid-green transition-colors">
+    <div class="w-14 h-14 rounded-xl bg-white/10 flex items-center justify-center">
+      <i class="fas fa-globe text-white text-xl"></i>
+    </div>
+    <div>
+      <p class="text-white font-display font-700 text-base">View Site</p>
+      <p class="text-light-green text-xs uppercase tracking-wider font-700">Live Website ↗</p>
+    </div>
+  </a>
+</div>
+
+<!-- Recent Messages + Quick Links -->
+<div class="grid lg:grid-cols-3 gap-6">
+
+  <!-- Recent Messages -->
+  <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+      <h2 class="font-display text-lg font-700 text-deep-green">Recent Messages</h2>
+      <a href="{{ url_for('admin.messages') }}" class="text-xs text-mid-green font-700 uppercase tracking-wider hover:underline">View All</a>
+    </div>
+    {% if recent_messages %}
+    <div class="divide-y divide-gray-50">
+      {% for msg in recent_messages %}
+      <a href="{{ url_for('admin.messages') }}" class="flex items-start gap-4 px-6 py-4 hover:bg-pale-green transition-colors block">
+        <div class="w-9 h-9 rounded-full bg-pale-green flex items-center justify-center shrink-0 mt-0.5">
+          <i class="fas fa-user text-mid-green text-sm"></i>
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-0.5">
+            <p class="font-700 text-gray-800 text-sm truncate">{{ msg.first_name }} {{ msg.last_name }}</p>
+            {% if not msg.read %}<span class="w-2 h-2 bg-red-500 rounded-full shrink-0"></span>{% endif %}
+          </div>
+          <p class="text-xs text-gray-500 truncate">{{ msg.subject or 'No subject' }} — {{ msg.message[:60] }}...</p>
+          <p class="text-[10px] text-gray-400 mt-1">{{ msg.date }}</p>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="px-6 py-12 text-center text-gray-400">
+      <i class="fas fa-inbox text-3xl mb-3 block opacity-30"></i>
+      <p class="text-sm">No messages yet</p>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-100">
+      <h2 class="font-display text-lg font-700 text-deep-green">Quick Actions</h2>
+    </div>
+    <div class="p-4 space-y-2">
+      <a href="{{ url_for('admin.gallery') }}" class="flex items-center gap-3 bg-pale-green hover:bg-green-100 rounded-xl px-4 py-3 transition-colors">
+        <i class="fas fa-upload text-mid-green"></i>
+        <span class="text-sm font-700 text-deep-green">Upload Gallery Photo</span>
+      </a>
+      <a href="{{ url_for('admin.content') }}" class="flex items-center gap-3 bg-pale-green hover:bg-green-100 rounded-xl px-4 py-3 transition-colors">
+        <i class="fas fa-pen text-mid-green"></i>
+        <span class="text-sm font-700 text-deep-green">Edit Homepage Text</span>
+      </a>
+      <a href="{{ url_for('admin.content') }}#social" class="flex items-center gap-3 bg-pale-green hover:bg-green-100 rounded-xl px-4 py-3 transition-colors">
+        <i class="fas fa-share-nodes text-mid-green"></i>
+        <span class="text-sm font-700 text-deep-green">Update Social Links</span>
+      </a>
+      <a href="{{ url_for('admin.messages') }}" class="flex items-center gap-3 bg-pale-green hover:bg-green-100 rounded-xl px-4 py-3 transition-colors">
+        <i class="fas fa-envelope text-mid-green"></i>
+        <span class="text-sm font-700 text-deep-green">View All Messages</span>
+      </a>
+      <a href="{{ url_for('admin.settings') }}" class="flex items-center gap-3 bg-pale-green hover:bg-green-100 rounded-xl px-4 py-3 transition-colors">
+        <i class="fas fa-key text-mid-green"></i>
+        <span class="text-sm font-700 text-deep-green">Change Password</span>
+      </a>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

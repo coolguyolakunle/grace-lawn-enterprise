@@ -1,0 +1,160 @@
+{% extends "admin/base.html" %}
+{% block title %}Site Content{% endblock %}
+{% block page_title %}Edit Site Content{% endblock %}
+
+{% block content %}
+
+<!-- Tab Navigation -->
+<div class="flex flex-wrap gap-2 mb-6" id="content-tabs">
+  <button onclick="switchTab('hero', this)" class="tab-btn active text-sm font-700 uppercase tracking-wider px-5 py-2.5 rounded-xl bg-deep-green text-white transition-all"><i class="fas fa-house mr-2"></i>Hero / Home</button>
+  <button onclick="switchTab('contact-info', this)" class="tab-btn text-sm font-700 uppercase tracking-wider px-5 py-2.5 rounded-xl bg-white border border-gray-200 text-gray-600 hover:border-mid-green transition-all"><i class="fas fa-phone mr-2"></i>Contact Info</button>
+  <button onclick="switchTab('social', this)" class="tab-btn text-sm font-700 uppercase tracking-wider px-5 py-2.5 rounded-xl bg-white border border-gray-200 text-gray-600 hover:border-mid-green transition-all" id="social-tab-btn"><i class="fas fa-share-nodes mr-2"></i>Social Links</button>
+</div>
+
+<!-- ── HERO / HOME TAB ── -->
+<div id="tab-hero" class="tab-panel">
+  <form method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="section" value="Hero / Home"/>
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div class="px-6 py-4 border-b border-gray-100">
+        <h2 class="font-display text-lg font-700 text-deep-green">Hero Section</h2>
+        <p class="text-xs text-gray-500 mt-0.5">These appear in the large banner at the top of the homepage.</p>
+      </div>
+      <div class="p-6 space-y-5">
+        <div class="grid md:grid-cols-2 gap-5">
+          <div>
+            <label class="block text-xs font-700 text-mid-green uppercase tracking-wider mb-1.5">Main Title</label>
+            <input type="text" name="hero_title" value="{{ content.hero_title }}"
+              class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-mid-green focus:ring-2 focus:ring-mid-green/20"/>
+          </div>
+          <div>
+            <label class="block text-xs font-700 text-mid-green uppercase tracking-wider mb-1.5">Subtitle (green text)</label>
+            <input type="text" name="hero_subtitle" value="{{ content.hero_subtitle }}"
+              class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-mid-green focus:ring-2 focus:ring-mid-green/20"/>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-700 text-mid-green uppercase tracking-wider mb-1.5">Tagline / Description</label>
+          <textarea name="hero_tagline" rows="3"
+            class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-mid-green focus:ring-2 focus:ring-mid-green/20 resize-none">{{ content.hero_tagline }}</textarea>
+        </div>
+        <div>
+          <label class="block text-xs font-700 text-mid-green uppercase tracking-wider mb-1.5">Hero Background Image (optional)</label>
+          <div class="flex items-start gap-4">
+            {% if content.hero_image %}
+            <img src="{{ content.hero_image }}" alt="Hero" class="w-24 h-16 object-cover rounded-xl border border-gray-100 shadow-sm shrink-0"/>
+            {% endif %}
+            <div class="flex-1">
+              <input type="file" name="hero_image_file" accept="image/*"
+                class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-700 file:bg-pale-green file:text-deep-green hover:file:bg-green-100 cursor-pointer"/>
+              <p class="text-xs text-gray-400 mt-1">Recommended: 1920×1080px or wider. PNG/JPG/WEBP.</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-700 text-mid-green uppercase tracking-wider mb-1.5">About Intro Text (shown on homepage "About" section)</label>
+          <textarea name="about_intro" rows="3"
+            class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-mid-green focus:ring-2 focus:ring-mid-green/20 resize-none">{{ content.about_intro }}</textarea>
+        </div>
+      </div>
+      <div class="px-6 pb-6">
+        <button type="submit" class="bg-deep-green hover:bg-mid-green text-white font-700 uppercase tracking-widest text-sm px-8 py-3 rounded-xl transition-colors flex items-center gap-2">
+          <i class="fas fa-save"></i> Save Changes
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- ── CONTACT INFO TAB ── -->
+<div id="tab-contact-info" class="tab-panel hidden">
+  <form method="POST">
+    <input type="hidden" name="section" value="Contact Info"/>
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div class="px-6 py-4 border-b border-gray-100">
+        <h2 class="font-display text-lg font-700 text-deep-green">Contact Information</h2>
+        <p class="text-xs text-gray-500 mt-0.5">Displayed in the footer and on the Contact page.</p>
+      </div>
+      <div class="p-6 space-y-5">
+        <div>
+          <label class="block text-xs font-700 text-mid-green uppercase tracking-wider mb-1.5"><i class="fas fa-map-marker-alt mr-1"></i>Address</label>
+          <input type="text" name="address" value="{{ content.address }}"
+            class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-mid-green focus:ring-2 focus:ring-mid-green/20"/>
+        </div>
+        <div class="grid md:grid-cols-2 gap-5">
+          <div>
+            <label class="block text-xs font-700 text-mid-green uppercase tracking-wider mb-1.5"><i class="fas fa-envelope mr-1"></i>Email</label>
+            <input type="email" name="email" value="{{ content.email }}"
+              class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-mid-green focus:ring-2 focus:ring-mid-green/20"/>
+          </div>
+          <div>
+            <label class="block text-xs font-700 text-mid-green uppercase tracking-wider mb-1.5"><i class="fas fa-phone mr-1"></i>Phone</label>
+            <input type="text" name="phone" value="{{ content.phone }}"
+              class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-mid-green focus:ring-2 focus:ring-mid-green/20"/>
+          </div>
+        </div>
+      </div>
+      <div class="px-6 pb-6">
+        <button type="submit" class="bg-deep-green hover:bg-mid-green text-white font-700 uppercase tracking-widest text-sm px-8 py-3 rounded-xl transition-colors flex items-center gap-2">
+          <i class="fas fa-save"></i> Save Changes
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- ── SOCIAL LINKS TAB ── -->
+<div id="tab-social" class="tab-panel hidden">
+  <form method="POST">
+    <input type="hidden" name="section" value="Social Links"/>
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div class="px-6 py-4 border-b border-gray-100">
+        <h2 class="font-display text-lg font-700 text-deep-green">Social Media Links</h2>
+        <p class="text-xs text-gray-500 mt-0.5">These appear in the footer and on the Contact page.</p>
+      </div>
+      <div class="p-6 space-y-5">
+        {% for key, icon, color, label in [
+          ('facebook',  'fab fa-facebook-f',  'text-blue-600',   'Facebook URL'),
+          ('instagram', 'fab fa-instagram',   'text-pink-600',   'Instagram URL'),
+          ('whatsapp',  'fab fa-whatsapp',    'text-green-600',  'WhatsApp Link (https://wa.me/234...)'),
+          ('tiktok',    'fab fa-tiktok',       'text-gray-800',   'TikTok URL'),
+        ] %}
+        <div>
+          <label class="block text-xs font-700 text-mid-green uppercase tracking-wider mb-1.5">
+            <i class="{{ icon }} {{ color }} mr-1"></i>{{ label }}
+          </label>
+          <input type="url" name="{{ key }}" value="{{ content[key] }}" placeholder="https://..."
+            class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-mid-green focus:ring-2 focus:ring-mid-green/20"/>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="px-6 pb-6">
+        <button type="submit" class="bg-deep-green hover:bg-mid-green text-white font-700 uppercase tracking-widest text-sm px-8 py-3 rounded-xl transition-colors flex items-center gap-2">
+          <i class="fas fa-save"></i> Save Changes
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  function switchTab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    b.classList.remove('bg-deep-green','text-white');
+    b.classList.add('bg-white','border','border-gray-200','text-gray-600');
+  });
+
+  document.getElementById('tab-' + name).classList.remove('hidden');
+
+  if (btn) {
+    btn.classList.add('bg-deep-green','text-white');
+    btn.classList.remove('bg-white','border','border-gray-200','text-gray-600');
+  }
+}
+</script>
+{% endblock %}

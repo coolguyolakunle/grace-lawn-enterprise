@@ -1,0 +1,70 @@
+{% extends "admin/base.html" %}
+{% block title %}Settings{% endblock %}
+{% block page_title %}Account Settings{% endblock %}
+
+{% block content %}
+<div class="max-w-lg">
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-100">
+      <h2 class="font-display text-lg font-700 text-deep-green">Change Login Credentials</h2>
+      <p class="text-xs text-gray-500 mt-0.5">Update your admin username and password.</p>
+    </div>
+    <div class="p-6">
+      {% if error %}
+      <div class="flash-error mb-5"><i class="fas fa-exclamation-circle mr-2"></i>{{ error }}</div>
+      {% endif %}
+      {% if success %}
+      <div class="flash-success mb-5"><i class="fas fa-check-circle mr-2"></i>{{ success }}</div>
+      {% endif %}
+
+      <form method="POST" class="space-y-5">
+        <div>
+          <label class="block text-xs font-700 text-mid-green uppercase tracking-wider mb-1.5">New Username</label>
+          <input type="text" name="username" value="{{ current_user.username }}"
+            class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-mid-green focus:ring-2 focus:ring-mid-green/20"/>
+        </div>
+        <hr class="border-gray-100"/>
+        <div>
+          <label class="block text-xs font-700 text-mid-green uppercase tracking-wider mb-1.5">Current Password *</label>
+          <input type="password" name="current_password" required
+            class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-mid-green focus:ring-2 focus:ring-mid-green/20"/>
+        </div>
+        <div>
+          <label class="block text-xs font-700 text-mid-green uppercase tracking-wider mb-1.5">New Password *</label>
+          <input type="password" name="new_password" required minlength="6" id="new-pw"
+            class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-mid-green focus:ring-2 focus:ring-mid-green/20"/>
+          <p class="text-xs text-gray-400 mt-1">Minimum 6 characters.</p>
+        </div>
+        <div>
+          <label class="block text-xs font-700 text-mid-green uppercase tracking-wider mb-1.5">Confirm New Password *</label>
+          <input type="password" name="confirm_password" required id="confirm-pw"
+            class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-mid-green focus:ring-2 focus:ring-mid-green/20"/>
+          <p id="pw-match-msg" class="text-xs mt-1 hidden"></p>
+        </div>
+        <button type="submit" class="bg-deep-green hover:bg-mid-green text-white font-700 uppercase tracking-widest text-sm px-8 py-3 rounded-xl transition-colors flex items-center gap-2">
+          <i class="fas fa-key"></i> Update Credentials
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  const newPw = document.getElementById('new-pw');
+  const confirmPw = document.getElementById('confirm-pw');
+  const msg = document.getElementById('pw-match-msg');
+  confirmPw.addEventListener('input', () => {
+    if (confirmPw.value.length === 0) { msg.classList.add('hidden'); return; }
+    msg.classList.remove('hidden');
+    if (newPw.value === confirmPw.value) {
+      msg.textContent = '✓ Passwords match';
+      msg.className = 'text-xs mt-1 text-green-600';
+    } else {
+      msg.textContent = '✗ Passwords do not match';
+      msg.className = 'text-xs mt-1 text-red-500';
+    }
+  });
+</script>
+{% endblock %}

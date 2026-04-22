@@ -1,0 +1,195 @@
+{% extends "main/base.html" %}
+{% block title %}Home — {{ config.SITE_NAME }}{% endblock %}
+
+{% block content %}
+
+<!-- ===== HERO ===== -->
+<section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+  <!-- Background pattern -->
+  <div class="absolute inset-0 bg-deep-green">
+    <div class="absolute inset-0 opacity-10" style="background-image: url('{{ content.hero_image or url_for('static', filename='img/default.jpg') }}'); background-repeat: repeat; background-size: 30px 30px;"></div>
+  </div>
+  <!-- Decorative circles -->
+  <div class="absolute -top-20 -right-20 w-96 h-96 rounded-full bg-mid-green opacity-20 blur-3xl"></div>
+  <div class="absolute bottom-10 -left-20 w-80 h-80 rounded-full bg-light-green opacity-15 blur-3xl"></div>
+
+  <div class="relative z-10 text-center text-white px-6 max-w-4xl mx-auto hero-entrance">
+    <div class="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-5 py-1.5 text-xs uppercase tracking-widest text-light-green mb-6 font-body font-700">
+      <i class="fas fa-leaf"></i> Premium Pig Farming · Badagry, Nigeria
+    </div>
+    <h1 class="font-display text-5xl md:text-7xl font-900 leading-tight mb-6">
+      {{ content.hero_title or "Grace Lawn" }}<br/><span class="text-light-green">{{ content.hero_subtitle or "Enterprise" }}</span>
+    </h1>
+    <p class="text-lg md:text-xl text-green-50 max-w-2xl mx-auto leading-relaxed mb-10 font-body font-300">
+      {{ content.hero_tagline or "First-class pig farming rooted in excellence — delivering premium pork products to local and international markets with over 1,500 animals and 250 stocks monthly." }}
+    </p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="{{ url_for('main.about') }}" class="bg-light-green hover:bg-white hover:text-deep-green text-green-50 font-body font-700 uppercase tracking-widest text-sm px-8 py-3.5 rounded-full transition-all duration-300 shadow-lg">
+        Discover Our Farm
+      </a>
+      <a href="{{ url_for('main.contact') }}" class="border-2 border-white/50 hover:border-light-green text-white hover:text-light-green font-body font-700 uppercase tracking-widest text-sm px-8 py-3.5 rounded-full transition-all duration-300">
+        Contact Us
+      </a>
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-white/50 text-xs">
+    <span class="tracking-widest uppercase text-[10px]">Scroll</span>
+    <i class="fas fa-chevron-down animate-bounce"></i>
+  </div>
+</section>
+
+<!-- ===== STATS STRIP ===== -->
+<section class="bg-pale-green border-y border-light-green/30 py-10">
+  <div class="max-w-5xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+    <div class="reveal">
+      <p class="font-display text-4xl font-700 text-deep-green" data-count="1500" data-suffix="+">0</p>
+      <p class="text-sm text-mid-green font-body mt-1 uppercase tracking-wider">Animals in Herd</p>
+    </div>
+    <div class="reveal">
+      <p class="font-display text-4xl font-700 text-deep-green" data-count="250">0</p>
+      <p class="text-sm text-mid-green font-body mt-1 uppercase tracking-wider">Monthly Stocks</p>
+    </div>
+    <div class="reveal">
+      <p class="font-display text-4xl font-700 text-deep-green" data-count="5">0</p>
+      <p class="text-sm text-mid-green font-body mt-1 uppercase tracking-wider">Premium Breeds</p>
+    </div>
+    <div class="reveal">
+      <p class="font-display text-4xl font-700 text-deep-green" data-count="2">0</p>
+      <p class="text-sm text-mid-green font-body mt-1 uppercase tracking-wider">Markets Served</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ABOUT INTRO ===== -->
+<section class="py-20 px-6">
+  <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-14 items-center">
+
+    <!-- Text -->
+    <div class="reveal">
+      <p class="text-xs font-body font-700 text-mid-green uppercase tracking-widest mb-3">Who We Are</p>
+      <h2 class="font-display text-4xl font-700 text-deep-green leading-tight mb-5">
+        A First-Class Farm<br/>Built on Integrity
+      </h2>
+      <div class="leaf-divider"><i class="fas fa-seedling text-light-green text-sm"></i></div>
+      <p class="text-gray-600 leading-relaxed mb-4">
+        <strong class="text-deep-green">Grace lawn Enterprise</strong> is a premium pig farm situated in Badagry, Lagos State, Nigeria. With a thriving herd of over 1,500 animals — including boars, sows, and piglets — we are a leading supplier of high-quality pork products.
+      </p>
+      <p class="text-gray-600 leading-relaxed mb-6">
+        Our major breeds include <span class="font-700 text-deep-green">Duroc, Landrace, Large White, TN70</span> and <span class="font-700 text-deep-green">Pietrain</span>. Each bred under responsible farm management to ensure the highest quality genetics and healthiest stock year-round.
+      </p>
+      <a href="{{ url_for('main.about') }}" class="inline-flex items-center gap-2 text-deep-green font-body font-700 uppercase tracking-widest text-sm border-b-2 border-light-green hover:text-mid-green transition-colors pb-0.5">
+        Read Our Full Story <i class="fas fa-arrow-right text-xs"></i>
+      </a>
+    </div>
+
+    <!-- Visual card -->
+    <div class="reveal relative">
+      <div class="bg-deep-green rounded-2xl p-8 text-white relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-40 h-40 bg-mid-green rounded-bl-full opacity-30"></div>
+        <i class="fas fa-pig text-6xl text-light-green mb-6 block opacity-80"></i>
+        <h3 class="font-display text-2xl font-700 mb-3">Our Breeds</h3>
+        <ul class="space-y-2 text-green-200 text-sm font-body">
+          <li class="flex items-center gap-2"><i class="fas fa-check-circle text-light-green text-xs"></i>Duroc — known for superior marbling</li>
+          <li class="flex items-center gap-2"><i class="fas fa-check-circle text-light-green text-xs"></i>Landrace — exceptional litter size</li>
+          <li class="flex items-center gap-2"><i class="fas fa-check-circle text-light-green text-xs"></i>Large White — fast growth, lean meat</li>
+          <li class="flex items-center gap-2"><i class="fas fa-check-circle text-light-green text-xs"></i>TN70 — robust and adaptable</li>
+          <li class="flex items-center gap-2"><i class="fas fa-check-circle text-light-green text-xs"></i>Pietrain — highly muscled, premium cuts</li>
+        </ul>
+      </div>
+      <!-- floating badge -->
+      <div class="absolute -top-4 -left-4 bg-light-green text-deep-green rounded-xl px-5 py-3 shadow-lg font-display font-700 text-sm">
+        Badagry, Lagos<br/><span class="text-xs font-body font-400">Nigeria</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FEATURES ===== -->
+<section class="py-20 px-6 bg-pale-green">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-14 reveal">
+      <p class="text-xs font-body font-700 text-mid-green uppercase tracking-widest mb-2">What Sets Us Apart</p>
+      <h2 class="font-display text-4xl font-700 text-deep-green">Our Core Strengths</h2>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="feature-card bg-white rounded-2xl p-7 shadow-sm border border-green-100 reveal">
+        <div class="w-13 h-13 bg-pale-green rounded-xl flex items-center justify-center mb-5 w-14 h-14">
+          <i class="fas fa-award text-deep-green text-2xl"></i>
+        </div>
+        <h3 class="font-display text-xl font-700 text-deep-green mb-3">Premium Quality</h3>
+        <p class="text-gray-600 text-sm leading-relaxed">Our pigs are raised to produce exceptionally lean, premium-quality meat that appeals to health-conscious consumers and professional chefs alike.</p>
+      </div>
+      <div class="feature-card bg-white rounded-2xl p-7 shadow-sm border border-green-100 reveal">
+        <div class="w-14 h-14 bg-pale-green rounded-xl flex items-center justify-center mb-5">
+          <i class="fas fa-shield-halved text-deep-green text-2xl"></i>
+        </div>
+        <h3 class="font-display text-xl font-700 text-deep-green mb-3">Best Farm Practices</h3>
+        <p class="text-gray-600 text-sm leading-relaxed">Industry-leading protocols focused on animal welfare, biosecurity, environmental stewardship, and full traceability throughout our production chain.</p>
+      </div>
+      <div class="feature-card bg-white rounded-2xl p-7 shadow-sm border border-green-100 reveal">
+        <div class="w-14 h-14 bg-pale-green rounded-xl flex items-center justify-center mb-5">
+          <i class="fas fa-globe text-deep-green text-2xl"></i>
+        </div>
+        <h3 class="font-display text-xl font-700 text-deep-green mb-3">Export-Ready</h3>
+        <p class="text-gray-600 text-sm leading-relaxed">Our production is designed for both domestic and international markets, with flexible supply options for local retailers and global partners.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== WHY CHOOSE US ===== -->
+<section class="py-20 px-6">
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center mb-12 reveal">
+      <p class="text-xs font-body font-700 text-mid-green uppercase tracking-widest mb-2">Our Promise</p>
+      <h2 class="font-display text-4xl font-700 text-deep-green">Why Choose Grace Lawn?</h2>
+    </div>
+    <div class="grid md:grid-cols-2 gap-5">
+      <div class="flex items-start gap-4 bg-pale-green rounded-xl p-5 reveal">
+        <i class="fas fa-circle-check text-mid-green text-xl mt-0.5"></i>
+        <div>
+          <h4 class="font-display font-700 text-deep-green mb-1">Quality from Genetics to Product</h4>
+          <p class="text-sm text-gray-600">Every stage from breeding to market is carefully managed for consistent, premium output.</p>
+        </div>
+      </div>
+      <div class="flex items-start gap-4 bg-pale-green rounded-xl p-5 reveal">
+        <i class="fas fa-circle-check text-mid-green text-xl mt-0.5"></i>
+        <div>
+          <h4 class="font-display font-700 text-deep-green mb-1">Transparent Sourcing</h4>
+          <p class="text-sm text-gray-600">Full visibility into our production processes, so you always know where your pork comes from.</p>
+        </div>
+      </div>
+      <div class="flex items-start gap-4 bg-pale-green rounded-xl p-5 reveal">
+        <i class="fas fa-circle-check text-mid-green text-xl mt-0.5"></i>
+        <div>
+          <h4 class="font-display font-700 text-deep-green mb-1">Flexible Supply Options</h4>
+          <p class="text-sm text-gray-600">Serving local retailers to international partners with adaptable volume and packaging solutions.</p>
+        </div>
+      </div>
+      <div class="flex items-start gap-4 bg-pale-green rounded-xl p-5 reveal">
+        <i class="fas fa-circle-check text-mid-green text-xl mt-0.5"></i>
+        <div>
+          <h4 class="font-display font-700 text-deep-green mb-1">Welfare & Biosecurity First</h4>
+          <p class="text-sm text-gray-600">Strong emphasis on animal welfare, proper nutrition, and strict biosecurity protocols every day.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA BANNER ===== -->
+<section class="py-20 px-6 bg-deep-green relative overflow-hidden">
+  <div class="absolute inset-0 opacity-10" style="background-image: repeating-linear-gradient(60deg, #5bbf85 0, #5bbf85 1px, transparent 0, transparent 50%); background-size: 25px 25px;"></div>
+  <div class="relative max-w-3xl mx-auto text-center text-white reveal">
+    <h2 class="font-display text-4xl font-700 mb-4">Best Breeds of Pig for Local and International Markets</h2>
+    <p class="text-green-200 mb-8 font-body">Whether you're a local retailer or international importer, we have the quality and capacity to meet your needs.</p>
+    <a href="{{ url_for('main.contact') }}" class="bg-light-green hover:bg-white text-deep-green font-body font-700 uppercase tracking-widest text-sm px-10 py-4 rounded-full transition-all duration-300 inline-block shadow-lg">
+      Get In Touch Today
+    </a>
+  </div>
+</section>
+
+{% endblock %}

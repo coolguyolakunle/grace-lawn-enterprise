@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Grace Lawn Enterprise{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico')}}" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'deep-green': '#1a4a2e',
+            'mid-green': '#2d7a4f',
+            'light-green': '#5bbf85',
+            'pale-green': '#e8f5ee',
+            'gold': '#c9a84c',
+          },
+          fontFamily: {
+            'display': ['Playfair Display', 'serif'],
+            'body': ['Lato', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Lato', sans-serif; }
+    h1,h2,h3,h4 { font-family: 'Playfair Display', serif; }
+
+    /* Navbar */
+    .nav-link {
+      position: relative;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      transition: color 0.3s;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0; height: 2px;
+      background: #5bbf85;
+      transition: width 0.3s;
+    }
+    .nav-link:hover::after, .nav-link.active::after { width: 100%; }
+
+    /* Hero section */
+    .hero-overlay {
+      background: linear-gradient(135deg, rgba(26,74,46,0.88) 0%, rgba(45,122,79,0.7) 60%, rgba(91,191,133,0.4) 100%);
+    }
+
+    /* Scroll animations */
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* Decorative leaf divider */
+    .leaf-divider {
+      display: flex; align-items: center; gap: 1rem; margin: 1.5rem 0;
+    }
+    .leaf-divider::before, .leaf-divider::after {
+      content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, #2d7a4f, transparent);
+    }
+
+    /* Card hover */
+    .feature-card {
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .feature-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 40px rgba(26,74,46,0.15);
+    }
+
+    /* Mobile menu */
+    #mobile-menu { display: none; }
+    #mobile-menu.open { display: block; }
+  </style>
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-white text-gray-800">
+
+  <!-- NAVBAR  -->
+  <nav class="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-sm shadow-sm border-b border-pale-green">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-10 py-16">
+
+        <!-- Logo -->
+        <a href="{{ url_for('main.index') }}" class="flex items-center gap-3 group">
+          <img src="{{ url_for('static', filename='img/GraceLawn.png') }}" alt="Grace Lawn" class="h-20 md:h-40 w-auto object-contain mx-auto drop-shadow-sm"/>
+        </a>
+
+        <!-- Desktop Nav -->
+        <div class="hidden md:flex items-center gap-8">
+          <a href="{{ url_for('main.index') }}" class="nav-link text-deep-green hover:text-mid-green {% if request.endpoint == 'main.index' %}active{% endif %}">Home</a>
+          <a href="{{ url_for('main.about') }}" class="nav-link text-deep-green hover:text-mid-green {% if request.endpoint == 'main.about' %}active{% endif %}">About</a>
+          <a href="{{ url_for('main.gallery') }}" class="nav-link text-deep-green hover:text-mid-green {% if request.endpoint == 'main.gallery' %}active{% endif %}">Gallery</a>
+          <a href="{{ url_for('main.contact') }}" class="nav-link text-deep-green hover:text-mid-green {% if request.endpoint == 'main.contact' %}active{% endif %}">Contact</a>
+          <a href="{{ url_for('main.terms') }}" class="nav-link text-deep-green hover:text-mid-green {% if request.endpoint == 'main.terms' %}active{% endif %}">Terms</a>
+          <a href="{{ url_for('main.contact') }}" class="bg-deep-green hover:bg-mid-green text-white text-xs font-body font-700 uppercase tracking-widest px-5 py-2.5 rounded-full transition-colors">
+            Get In Touch
+          </a>
+        </div>
+
+        <!-- Mobile hamburger -->
+        <button id="menu-toggle" class="md:hidden text-deep-green focus:outline-none">
+          <i class="fas fa-bars text-xl" id="menu-icon"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="md:hidden bg-white border-t border-pale-green px-6 pb-1 pt-1">
+      <div class="flex flex-col gap-4">
+        <a href="{{ url_for('main.index') }}" class="nav-link text-deep-green">Home</a>
+        <a href="{{ url_for('main.about') }}" class="nav-link text-deep-green">About</a>
+        <a href="{{ url_for('main.gallery') }}" class="nav-link text-deep-green">Gallery</a>
+        <a href="{{ url_for('main.contact') }}" class="nav-link text-deep-green">Contact</a>
+        <a href="{{ url_for('main.terms') }}" class="nav-link text-deep-green">Terms of Service</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <main class="pt-[72px]">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- FOOTER  -->
+  <footer class="bg-deep-green text-white">
+    <div class="max-w-7xl mx-auto px-6 py-14 grid grid-cols-1 md:grid-cols-3 gap-10">
+
+      <!-- Brand -->
+      <div>
+        <div class="bg-white p-4 rounded-lg inline-flex items-center shadow-sm">
+          <img src="{{ url_for('static', filename='img/GraceLawn.png') }}"
+            alt="Grace Lawn"
+            class="h-14 md:h-16 w-auto object-contain">
+        </div>
+        <p class="text-sm text-green-200 leading-relaxed pt-4">A first-class pig farm located in Badagry, Lagos State, Nigeria. Committed to quality, welfare, and excellence.</p>
+      </div>
+
+      <!-- Quick Links -->
+      <div>
+        <h4 class="font-display text-light-green text-lg mb-4">Quick Links</h4>
+        <ul class="space-y-2 text-sm text-green-200">
+          <li><a href="{{ url_for('main.index') }}" class="hover:text-white transition-colors">Home</a></li>
+          <li><a href="{{ url_for('main.about') }}" class="hover:text-white transition-colors">About Us</a></li>
+          <li><a href="{{ url_for('main.gallery') }}" class="hover:text-white transition-colors">Gallery</a></li>
+          <li><a href="{{ url_for('main.contact') }}" class="hover:text-white transition-colors">Contact</a></li>
+          <li><a href="{{ url_for('main.terms') }}" class="hover:text-white transition-colors">Terms of Service</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact & Social -->
+      <div>
+        <h4 class="font-display text-light-green text-lg mb-4">Connect With Us</h4>
+        <p class="text-sm text-green-200 mb-1"><i class="fas fa-map-marker-alt mr-2 text-light-green"></i>Badagry, Lagos State, Nigeria</p>
+        <p class="text-sm text-green-200 mb-1"><i class="fas fa-envelope mr-2 text-light-green"></i>gracelawn@yahoo.com</p>
+        <p class="text-sm text-green-200 mb-4"><i class="fas fa-phone mr-2 text-light-green"></i>+234 813 756 1656</p>
+        <div class="flex gap-3">
+          <a href="#" class="w-9 h-9 rounded-full bg-mid-green hover:bg-light-green flex items-center justify-center transition-colors" title="Facebook">
+            <i class="fab fa-facebook-f text-white text-sm"></i>
+          </a>
+          <a href="https://www.instagram.com/gracelawnenterprise?igsh=eTZ4NDM0bTB4YTFk" class="w-9 h-9 rounded-full bg-mid-green hover:bg-light-green flex items-center justify-center transition-colors" title="Instagram">
+            <i class="fab fa-instagram text-white text-sm"></i>
+          </a>
+          <a href="https://wa.me/2348137561656" class="w-9 h-9 rounded-full bg-mid-green hover:bg-light-green flex items-center justify-center transition-colors" title="WhatsApp">
+            <i class="fab fa-whatsapp text-white text-sm"></i>
+          </a>
+          <a href="https://tiktok.com/@gracelawnenterprise" class="w-9 h-9 rounded-full bg-mid-green hover:bg-light-green flex items-center justify-center transition-colors" title="TikTok">
+            <i class="fab fa-tiktok text-white text-sm"></i>
+           </a>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="border-t border-mid-green py-4 text-center text-xs text-green-300">
+      &copy; 2026 Grace Lawn Enterprise. All rights reserved. &nbsp;|&nbsp;
+      <a href="{{ url_for('main.terms') }}" class="hover:text-white transition-colors">Terms of Service</a>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='main.js') }}"></script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,176 @@
+{% extends "main/base.html" %}
+{% block title %}Contact — {{ config.SITE_NAME }}{% endblock %}
+
+{% block content %}
+
+<!-- Page Hero -->
+<section class="relative bg-deep-green text-white py-28 px-6 overflow-hidden">
+  <div class="absolute inset-0 opacity-10" style="background-image: repeating-linear-gradient(45deg, #5bbf85 0, #5bbf85 1px, transparent 0, transparent 50%); background-size: 30px 30px;"></div>
+  <div class="absolute -bottom-1 left-0 right-0">
+    <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 60L1440 60L1440 0Q720 80 0 0Z" fill="white"/></svg>
+  </div>
+  <div class="relative max-w-4xl mx-auto text-center">
+    <p class="text-xs font-body font-700 text-light-green uppercase tracking-widest mb-3">Reach Out</p>
+    <h1 class="font-display text-5xl md:text-6xl font-900 mb-4">Contact Us</h1>
+    <p class="text-green-200 text-lg font-body font-300">We'd love to hear from you</p>
+  </div>
+</section>
+
+<!-- Contact Content -->
+<section class="py-20 px-6">
+  <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-14 items-start">
+
+    <!-- Contact Info -->
+    <div class="reveal">
+      <p class="text-xs font-body font-700 text-mid-green uppercase tracking-widest mb-2">Get In Touch</p>
+      <h2 class="font-display text-4xl font-700 text-deep-green mb-6">Let's Talk Business</h2>
+      <div class="leaf-divider max-w-xs"><i class="fas fa-leaf text-light-green text-sm"></i></div>
+      <p class="text-gray-600 leading-relaxed mb-8 mt-4">
+        Whether you're a local retailer, restaurant owner, or international importer, Grace Lawn Enterprise is ready to supply premium pork products that meet your standards. Reach out today.
+      </p>
+
+      <!-- Info Cards -->
+      <div class="space-y-4">
+        <div class="flex items-center gap-4 bg-pale-green rounded-xl p-4">
+          <div class="w-11 h-11 bg-deep-green rounded-xl flex items-center justify-center shrink-0">
+            <i class="fas fa-map-marker-alt text-light-green"></i>
+          </div>
+          <div>
+            <p class="text-xs font-body font-700 text-mid-green uppercase tracking-wider">Location</p>
+            <p class="text-deep-green font-body font-700">{{ content.address or "Badagry, Lagos State, Nigeria" }}</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-4 bg-pale-green rounded-xl p-4">
+          <div class="w-11 h-11 bg-deep-green rounded-xl flex items-center justify-center shrink-0">
+            <i class="fas fa-envelope text-light-green"></i>
+          </div>
+          <div>
+            <p class="text-xs font-body font-700 text-mid-green uppercase tracking-wider">Email</p>
+            <a href="mailto:gracelawn@yahoo.com" class="text-deep-green font-body font-700 hover:text-mid-green transition-colors">{{ content.email or "gracelawn@yahoo.com" }}</a>
+          </div>
+        </div>
+        <div class="flex items-center gap-4 bg-pale-green rounded-xl p-4">
+          <div class="w-11 h-11 bg-deep-green rounded-xl flex items-center justify-center shrink-0">
+            <i class="fas fa-phone text-light-green"></i>
+          </div>
+          <div>
+            <p class="text-xs font-body font-700 text-mid-green uppercase tracking-wider">Phone</p>
+            <a href="tel:+2348137561656" class="text-deep-green font-body font-700 hover:text-mid-green transition-colors">{{ content.phone or "+2348137561656" }}</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Social Media -->
+      <div class="mt-8">
+        <p class="text-xs font-body font-700 text-mid-green uppercase tracking-widest mb-4">Follow Us On Social Media</p>
+        <div class="flex gap-3 flex-wrap">
+          <a href="{{ content.facebook or 'https://facebook.com/gracelawnenterprise' }}" target="_blank" rel="noopener" class="flex items-center gap-2 bg-[#1877f2] hover:opacity-90 text-white text-sm font-body font-700 px-4 py-2.5 rounded-full transition-opacity">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+          <a href="{{ content.instagram or 'https://www.instagram.com/gracelawnenterprise?igsh=eTZ4NDM0bTB4YTFk' }}" target="_blank" rel="noopener" class="flex items-center gap-2 bg-gradient-to-r from-[#f09433] via-[#e6683c] to-[#bc1888] hover:opacity-90 text-white text-sm font-body font-700 px-4 py-2.5 rounded-full transition-opacity">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a href="{{ content.whatsapp or 'https://wa.me/2348137561656' }}" target="_blank" rel="noopener" class="flex items-center gap-2 bg-[#25d366] hover:opacity-90 text-white text-sm font-body font-700 px-4 py-2.5 rounded-full transition-opacity">
+            <i class="fab fa-whatsapp"></i>
+          </a>
+          <a href="{{ content.tiktok or 'https://www.tiktok.com/@gracelawnenterprise' }}" target="_blank" rel="noopener" class="flex items-center gap-2 bg-black hover:opacity-80 text-white text-sm font-body font-700 px-4 py-2.5 rounded-full transition-opacity">
+            <i class="fab fa-tiktok"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Form -->
+    <div class="bg-pale-green rounded-2xl p-8 shadow-sm border border-green-100 reveal">
+      <h3 class="font-display text-2xl font-700 text-deep-green mb-6">Send a Message</h3>
+      <form id="contact-form" class="space-y-5">
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-body font-700 text-mid-green uppercase tracking-wider mb-1.5">First Name</label>
+            <input type="text" name="first_name" required placeholder="John"
+              class="w-full rounded-xl border border-green-200 bg-white px-4 py-3 text-sm text-gray-800 focus:outline-none focus:border-mid-green focus:ring-2 focus:ring-mid-green/20 transition-all"/>
+          </div>
+          <div>
+            <label class="block text-xs font-body font-700 text-mid-green uppercase tracking-wider mb-1.5">Last Name</label>
+            <input type="text" name="last_name" required placeholder="Doe"
+              class="w-full rounded-xl border border-green-200 bg-white px-4 py-3 text-sm text-gray-800 focus:outline-none focus:border-mid-green focus:ring-2 focus:ring-mid-green/20 transition-all"/>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-body font-700 text-mid-green uppercase tracking-wider mb-1.5">Email Address</label>
+          <input type="email" name="email" required placeholder="you@example.com"
+            class="w-full rounded-xl border border-green-200 bg-white px-4 py-3 text-sm text-gray-800 focus:outline-none focus:border-mid-green focus:ring-2 focus:ring-mid-green/20 transition-all"/>
+        </div>
+        <div>
+          <label class="block text-xs font-body font-700 text-mid-green uppercase tracking-wider mb-1.5">Phone Number</label>
+          <input type="tel" name="phone" placeholder="+234 800 000 0000"
+            class="w-full rounded-xl border border-green-200 bg-white px-4 py-3 text-sm text-gray-800 focus:outline-none focus:border-mid-green focus:ring-2 focus:ring-mid-green/20 transition-all"/>
+        </div>
+        <div>
+          <label class="block text-xs font-body font-700 text-mid-green uppercase tracking-wider mb-1.5">Subject</label>
+          <select name="subject" class="w-full rounded-xl border border-green-200 bg-white px-4 py-3 text-sm text-gray-800 focus:outline-none focus:border-mid-green focus:ring-2 focus:ring-mid-green/20 transition-all">
+            <option value="">Select a subject</option>
+            <option>Product Enquiry</option>
+            <option>Bulk Order</option>
+            <option>Export Partnership</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-body font-700 text-mid-green uppercase tracking-wider mb-1.5">Message</label>
+          <textarea name="message" rows="4" required placeholder="Tell us how we can help..."
+            class="w-full rounded-xl border border-green-200 bg-white px-4 py-3 text-sm text-gray-800 focus:outline-none focus:border-mid-green focus:ring-2 focus:ring-mid-green/20 transition-all resize-none"></textarea>
+        </div>
+        <button type="submit" class="w-full bg-deep-green hover:bg-mid-green text-white font-body font-700 uppercase tracking-widest text-sm py-3.5 rounded-xl transition-colors flex items-center justify-center gap-2">
+          <i class="fas fa-paper-plane"></i> Send Message
+        </button>
+        <p id="form-success" class="hidden text-center text-sm text-mid-green font-body font-700"><i class="fas fa-check-circle mr-1"></i>Message sent! We'll be in touch soon.</p>
+      </form>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.getElementById('contact-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const btn = this.querySelector('button[type="submit"]');
+  const msg = document.getElementById('form-success');
+  const form = this;
+
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Sending…';
+  btn.disabled  = true;
+
+  const data = {};
+  new FormData(form).forEach((v, k) => data[k] = v);
+
+  fetch('/admin/submit-contact', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(data)
+  })
+  .then(r => r.json())
+  .then(res => {
+    if (res.ok) {
+      btn.innerHTML = '<i class="fas fa-check mr-2"></i>Message Sent!';
+      btn.style.background = '#2d7a4f';
+      msg && msg.classList.remove('hidden');
+      setTimeout(() => {
+        btn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Send Message';
+        btn.style.background = '';
+        btn.disabled = false;
+        msg && msg.classList.add('hidden');
+        form.reset();
+      }, 4000);
+    }
+  })
+  .catch(() => {
+    btn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Send Message';
+    btn.disabled = false;
+  });
+});
+</script>
+{% endblock %}

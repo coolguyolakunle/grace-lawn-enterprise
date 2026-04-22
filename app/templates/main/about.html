@@ -1,0 +1,121 @@
+{% extends "main/base.html" %}
+{% block title %}About Us — {{ config.SITE_NAME }}{% endblock %}
+
+{% block content %}
+
+<!-- Page Hero -->
+<section class="relative bg-deep-green text-white py-28 px-6 overflow-hidden">
+  <div class="absolute inset-0 opacity-10" style="background-image: repeating-linear-gradient(45deg, #5bbf85 0, #5bbf85 1px, transparent 0, transparent 50%); background-size: 30px 30px;"></div>
+  <div class="absolute -bottom-1 left-0 right-0">
+    <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 60L1440 60L1440 0Q720 80 0 0Z" fill="white"/></svg>
+  </div>
+  <div class="relative max-w-4xl mx-auto text-center">
+    <p class="text-xs font-body font-700 text-light-green uppercase tracking-widest mb-3">Our Story</p>
+    <h1 class="font-display text-5xl md:text-6xl font-900 mb-4">About Us</h1>
+    <p class="text-green-200 text-lg font-body font-300">Excellence in pig farming since day one</p>
+  </div>
+</section>
+
+<!-- Welcome Section -->
+<section class="py-20 px-6">
+  <div class="max-w-4xl mx-auto text-center reveal">
+    <p class="text-xs font-body font-700 text-mid-green uppercase tracking-widest mb-3">Welcome to</p>
+    <h2 class="font-display text-4xl font-700 text-deep-green mb-6">Gracelawn Enterprise</h2>
+    <div class="leaf-divider max-w-xs mx-auto"><i class="fas fa-leaf text-light-green"></i></div>
+    <p class="text-gray-600 leading-relaxed text-lg mt-6">
+      <strong class="text-deep-green">Gracelawn</strong> is a first-class pig farm located in <strong class="text-deep-green">Badagry, Lagos State, Nigeria</strong>. Our operations boast a robust herd size of over <strong class="text-deep-green">1,500 animals</strong>, including boars, sows, and piglets. Our major breeds are <strong class="text-deep-green">Duroc, Landrace, Large White, TN70</strong> and <strong class="text-deep-green">Pietrain</strong>.
+    </p>
+    <p class="text-gray-600 leading-relaxed text-lg mt-4">
+      Our farm is built on a foundation of responsible management, enabling us to maintain healthy, productive stock year-round. We produce an average of <strong class="text-deep-green">250 stocks monthly</strong>.
+    </p>
+  </div>
+</section>
+
+<!-- Capabilities Section -->
+<section class="py-16 px-6 bg-pale-green">
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center mb-12 reveal">
+      <p class="text-xs font-body font-700 text-mid-green uppercase tracking-widest mb-2">What We Offer</p>
+      <h2 class="font-display text-4xl font-700 text-deep-green">Our Capabilities & Offerings</h2>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6">
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-green-100 feature-card reveal">
+        <i class="fas fa-pig text-3xl text-mid-green mb-4 block"></i>
+        <h3 class="font-display text-lg font-700 text-deep-green mb-2">Large, Diverse Herd</h3>
+        <p class="text-gray-600 text-sm leading-relaxed">Over 1,500 pigs in our flock with an average of 250 stocks ready for the market every month. A balanced mix of boars, sows, and piglets ensures steady availability and consistent breeding cycles.</p>
+      </div>
+
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-green-100 feature-card reveal">
+        <i class="fas fa-globe-africa text-3xl text-mid-green mb-4 block"></i>
+        <h3 class="font-display text-lg font-700 text-deep-green mb-2">Export Markets</h3>
+        <p class="text-gray-600 text-sm leading-relaxed">Products tailored for both local and international export markets. We proudly offer high-quality pork products designed to meet domestic consumer needs and international standards alike.</p>
+      </div>
+
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-green-100 feature-card reveal">
+        <i class="fas fa-drumstick-bite text-3xl text-mid-green mb-4 block"></i>
+        <h3 class="font-display text-lg font-700 text-deep-green mb-2">Pure Lean Meat</h3>
+        <p class="text-gray-600 text-sm leading-relaxed">Our pigs are raised to produce meat that is exceptionally lean and of premium quality, appealing to health-conscious customers and chefs who seek superior texture and flavor.</p>
+      </div>
+
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-green-100 feature-card reveal">
+        <i class="fas fa-shield-halved text-3xl text-mid-green mb-4 block"></i>
+        <h3 class="font-display text-lg font-700 text-deep-green mb-2">Best Farm Practices</h3>
+        <p class="text-gray-600 text-sm leading-relaxed">We employ industry-leading farming practices focused on animal welfare, biosecurity, environmental stewardship, and traceability — delivering consistent quality with the highest standards of safety and sustainability.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Breeds Section -->
+<section class="py-20 px-6">
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center mb-12 reveal">
+      <p class="text-xs font-body font-700 text-mid-green uppercase tracking-widest mb-2">Our Stock</p>
+      <h2 class="font-display text-4xl font-700 text-deep-green">Best Breeds of Pig for Local and International Markets</h2>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+      {% for breed, desc in [
+        ('Duroc', 'Superior marbling & flavor'),
+        ('Landrace', 'High litter size & efficiency'),
+        ('Large White', 'Fast growth, lean meat'),
+        ('TN70', 'Robust & highly adaptable'),
+        ('Pietrain', 'Exceptional muscle yield')
+      ] %}
+      <div class="bg-deep-green text-white rounded-2xl p-5 text-center feature-card reveal">
+        <i class="fas fa-leaf text-light-green text-2xl mb-3 block"></i>
+        <h4 class="font-display font-700 text-base mb-1">{{ breed }}</h4>
+        <p class="text-xs text-green-300">{{ desc }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Why Choose Us -->
+<section class="py-20 px-6 bg-deep-green text-white relative overflow-hidden">
+  <div class="absolute inset-0 opacity-10" style="background-image: repeating-linear-gradient(60deg, #5bbf85 0, #5bbf85 1px, transparent 0, transparent 50%); background-size: 25px 25px;"></div>
+  <div class="relative max-w-5xl mx-auto">
+    <div class="text-center mb-12 reveal">
+      <p class="text-xs font-body font-700 text-light-green uppercase tracking-widest mb-2">Our Promise</p>
+      <h2 class="font-display text-4xl font-700">Why Choose Us</h2>
+    </div>
+    <div class="grid md:grid-cols-2 gap-5">
+      {% for point in [
+        ('Commitment to quality from genetics to finished product.', 'fa-award'),
+        ('Transparent sourcing and production processes.', 'fa-eye'),
+        ('Flexible supply options for both local retailers and international partners.', 'fa-handshake'),
+        ('Strong emphasis on welfare, nutrition, and biosecurity.', 'fa-heart-pulse')
+      ] %}
+      <div class="flex items-center gap-4 bg-white/10 rounded-xl p-5 backdrop-blur-sm border border-white/10 reveal">
+        <div class="w-11 h-11 rounded-full bg-light-green flex items-center justify-center shrink-0">
+          <i class="fas {{ point[1] }} text-deep-green text-sm"></i>
+        </div>
+        <p class="text-green-100 font-body">{{ point[0] }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% endblock %}

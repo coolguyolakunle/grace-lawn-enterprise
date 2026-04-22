@@ -1,0 +1,105 @@
+{% extends "admin/base.html" %}
+{% block title %}Messages{% endblock %}
+{% block page_title %}Messages Inbox{% endblock %}
+
+{% block content %}
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+  <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <h2 class="font-display text-lg font-700 text-deep-green">All Messages</h2>
+      {% set unread = messages|selectattr('read','equalto',false)|list|length %}
+      {% if unread > 0 %}
+      <span class="bg-red-500 text-white text-xs font-700 px-2.5 py-0.5 rounded-full">{{ unread }} unread</span>
+      {% endif %}
+    </div>
+    <p class="text-sm text-gray-500">{{ messages|length }} total</p>
+  </div>
+
+  {% if messages %}
+  <div class="divide-y divide-gray-50" id="messages-list">
+    {% for msg in messages %}
+    <div class="message-row {% if not msg.read %}bg-pale-green/40{% endif %} hover:bg-gray-50 transition-colors"
+         id="msg-{{ msg.id }}" data-id="{{ msg.id }}">
+      <div class="px-6 py-4">
+        <!-- Header row -->
+        <div class="flex items-start gap-4">
+          <div class="w-10 h-10 rounded-full bg-pale-green flex items-center justify-center shrink-0 mt-0.5">
+            <i class="fas fa-user text-mid-green text-sm"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex flex-wrap items-center gap-2 mb-1">
+              <span class="font-700 text-gray-800 text-sm">{{ msg.first_name }} {{ msg.last_name }}</span>
+              {% if not msg.read %}
+              <span class="unread-badge bg-red-500 text-white text-[10px] font-700 px-2 py-0.5 rounded-full uppercase tracking-wider">New</span>
+              {% endif %}
+              {% if msg.subject %}
+              <span class="bg-pale-green text-mid-green text-[10px] font-700 px-2 py-0.5 rounded-full">{{ msg.subject }}</span>
+              {% endif %}
+            </div>
+            <p class="text-xs text-gray-500 mb-1">
+              <i class="fas fa-envelope text-gray-300 mr-1"></i>{{ msg.email }}
+              {% if msg.phone %}&nbsp;·&nbsp;<i class="fas fa-phone text-gray-300 mr-1"></i>{{ msg.phone }}{% endif %}
+            </p>
+            <p class="text-[10px] text-gray-400"><i class="fas fa-clock mr-1"></i>{{ msg.date }}</p>
+          </div>
+          <!-- Actions -->
+          <div class="flex items-center gap-2 shrink-0">
+            <button onclick="toggleMessage('{{ msg.id }}')"
+              class="text-xs text-mid-green hover:text-deep-green font-700 bg-pale-green hover:bg-green-100 px-3 py-1.5 rounded-lg transition-colors">
+              <i class="fas fa-chevron-down text-xs" id="chevron-{{ msg.id }}"></i>
+            </button>
+            <form method="POST" action="{{ url_for('admin.del_message', msg_id=msg.id) }}"
+              onsubmit="return confirm('Delete this message?')" class="inline">
+              <button type="submit" class="text-xs text-red-400 hover:text-red-600 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors">
+                <i class="fas fa-trash text-xs"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Message body (collapsible) -->
+        <div id="body-{{ msg.id }}" class="hidden mt-4 ml-14">
+          <div class="bg-white border border-gray-100 rounded-xl p-4 text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">{{ msg.message }}</div>
+          <a href="mailto:{{ msg.email }}?subject=Re: {{ msg.subject or 'Your enquiry' }}"
+            class="inline-flex items-center gap-2 mt-3 bg-deep-green hover:bg-mid-green text-white text-xs font-700 uppercase tracking-wider px-4 py-2 rounded-lg transition-colors">
+            <i class="fas fa-reply"></i> Reply via Email
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% else %}
+  <div class="py-20 text-center text-gray-400">
+    <i class="fas fa-inbox text-5xl mb-4 block opacity-20"></i>
+    <p class="text-lg font-display text-gray-500">No messages yet</p>
+    <p class="text-sm mt-1">Messages from the contact form will appear here.</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function toggleMessage(id) {
+  const body    = document.getElementById('body-' + id);
+  const chevron = document.getElementById('chevron-' + id);
+  const row     = document.getElementById('msg-' + id);
+  const badge   = row.querySelector('.unread-badge');
+
+  const isOpen = !body.classList.contains('hidden');
+  body.classList.toggle('hidden');
+  chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
+
+  // Mark as read via API
+  if (!isOpen) {
+    fetch(`/admin/messages/${id}/read`, { method: 'POST' })
+      .then(() => {
+        if (badge) badge.remove();
+        row.classList.remove('bg-pale-green/40');
+      });
+  }
+}
+</script>
+{% endblock %}
