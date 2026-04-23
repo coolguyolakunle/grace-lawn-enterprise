@@ -127,19 +127,26 @@ def upload_image():
 @admin.route('/gallery/<item_id>/edit', methods=['POST'])
 @login_required
 def edit_gallery_item(item_id):
-    update_gallery_item(
-        item_id,
-        request.form.get('label', ''),
-        request.form.get('category', 'farm'),
-        request.form.get('caption', '')
-    )
+    item = GalleryItem.query.get(item_id)
+
+    if not item:
+        flash('Item not found.', 'error')
+        return redirect(url_for('admin.gallery'))
+
+    item.label = request.form.get('label', '')
+    item.category = request.form.get('category', 'farm')
+    item.caption = request.form.get('caption', '')
+
+    db.session.commit()
+
     flash('Image updated.', 'success')
     return redirect(url_for('admin.gallery'))
+
 
 @admin.route('/gallery/<int:item_id>/delete', methods=['POST'])
 @login_required
 def del_gallery_item(item_id):
-    item = GalleryItem.query.get(item_id)
+    item = db.session.get(GalleryItem, item_id)
 
     if item:
         try:
@@ -250,3 +257,14 @@ def submit_contact():
     db.session.commit()
 
     return jsonify({'ok': True, 'message': 'Message received!'})
+
+# --- EXTRA ADMIN TOOL (GENERATE RESET LINK) ─────
+@admin.route('/generate-reset-link')
+@login_required
+def generate_reset_link():
+    user = AdminUser.query.first()
+    token = user.generate_reset_token()
+
+    reset_url = url_for('admin.reset_password', token=token, _external=True)
+
+    return f"Reset link (valid 15 mins): <a href='{reset_url}'>{reset_url}</a>"

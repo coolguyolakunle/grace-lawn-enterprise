@@ -172,10 +172,11 @@ def add_gallery_item(image_url, public_id, label, category, caption=""):
 
 def update_gallery_item(item_id, label, category, caption):
     item = GalleryItem.query.get(item_id)
+    
     if item:
-        item.label = label
-        item.category = category
-        item.caption = caption
+        item.label = request.form.get('label', '')
+        item.category = request.form.get('category', 'farm')
+        item.caption = request.form.get('caption', '')
         db.session.commit()
 
 
