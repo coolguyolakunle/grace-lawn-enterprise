@@ -101,7 +101,7 @@ class SiteContent(db.Model):
 
 
 DEFAULT_CONTENT = {
-    "hero_title": "GraceLawn Enterprise",
+    "hero_title": "Grace Lawn Enterprise",
     "hero_subtitle": "The Pig Depot",
     "hero_tagline": "First-class pig farming rooted in excellence...",
     "hero_image": "",
