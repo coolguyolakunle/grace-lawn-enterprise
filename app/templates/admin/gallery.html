@@ -16,8 +16,8 @@
           <div id="drop-zone" class="border-2 border-dashed border-green-200 rounded-xl p-6 text-center cursor-pointer hover:border-mid-green hover:bg-pale-green/50 transition-all">
             <i class="fas fa-cloud-upload-alt text-3xl text-light-green mb-2 block"></i>
             <p class="text-sm text-gray-500 mb-1">Drag & drop or <span class="text-mid-green font-700">click to browse</span></p>
-            <p class="text-xs text-gray-400">PNG, JPG, GIF, WEBP — max 16MB</p>
-            <input type="file" name="image" id="image-input" accept="image/*" required class="hidden"/>
+            <p class="text-xs text-gray-400">Images & Videos (PNG, JPG, MP4, WEBM...) — max 16MB</p>
+            <input type="file" name="image" id="image-input" accept="image/*,video/*" required class="hidden"/>
             <p id="file-name" class="text-xs text-mid-green font-700 mt-2 hidden"></p>
           </div>
         </div>
@@ -43,11 +43,16 @@
       <!-- Preview -->
       <div id="img-preview" class="hidden mb-5">
         <p class="text-xs font-700 text-mid-green uppercase tracking-wider mb-2">Preview</p>
-        <img id="preview-img" src="" alt="" class="w-40 h-40 object-cover rounded-xl border border-green-100 shadow-sm"/>
+
+        <!-- Image Preview -->
+        <img id="preview-img" class="w-40 h-40 object-cover rounded-xl border hidden"/>
+
+        <!-- Video Preview -->
+        <video id="preview-video" controls class="w-40 h-40 object-cover rounded-xl border hidden"></video>
       </div>
 
       <button type="submit" class="bg-deep-green hover:bg-mid-green text-white font-700 uppercase tracking-widest text-sm px-8 py-3 rounded-xl transition-colors flex items-center gap-2">
-        <i class="fas fa-upload"></i> Upload Image
+        <i class="fas fa-upload"></i> Upload
       </button>
     </form>
   </div>
@@ -72,9 +77,14 @@
     <div class="gallery-admin-item rounded-xl overflow-hidden border border-gray-100 shadow-sm group" data-category="{{ item.category }}">
       <!-- Image -->
       <div class="relative aspect-square bg-pale-green">
-        <img src="{{ item.image_url }}" alt="{{ item.label }}"
-             alt="{{ item.label }}"
-             class="w-full h-full object-cover"/>
+        {% if item.media_type == 'video' %}
+          <video class="w-full h-full object-cover" muted>
+            <source src="{{ item.image_url }}">
+          </video>
+        {% else %}
+          <img src="{{ item.image_url }}" alt="{{ item.label }}"
+              class="w-full h-full object-cover"/>
+        {% endif %}
         <!-- Overlay -->
         <div class="absolute inset-0 bg-deep-green/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
           <button onclick="openEdit('{{ item.id }}','{{ item.label|e }}','{{ item.category }}','{{ item.caption|e }}')"
@@ -104,8 +114,8 @@
   {% else %}
   <div class="py-20 text-center text-gray-400">
     <i class="fas fa-images text-5xl mb-4 block opacity-20"></i>
-    <p class="text-lg font-display text-gray-500">No images uploaded yet</p>
-    <p class="text-sm mt-1">Upload your first image using the form above.</p>
+    <p class="text-lg font-display text-gray-500">No images/videos uploaded yet</p>
+    <p class="text-sm mt-1">Upload your first image or video using the form above.</p>
   </div>
   {% endif %}
 </div>
@@ -169,10 +179,28 @@
   function handleFile(file) {
     fileLabel.textContent = file.name;
     fileLabel.classList.remove('hidden');
+
+    const previewImg = document.getElementById('preview-img');
+    const previewVideo = document.getElementById('preview-video');
+
+    previewImg.classList.add('hidden');
+    previewVideo.classList.add('hidden');
+
     const reader = new FileReader();
-    reader.onload = e => { previewImg.src = e.target.result; preview.classList.remove('hidden'); };
+
+    reader.onload = e => {
+      if (file.type.startsWith('video')) {
+        previewVideo.src = e.target.result;
+        previewVideo.classList.remove('hidden');
+      } else {
+        previewImg.src = e.target.result;
+        previewImg.classList.remove('hidden');
+      }
+      preview.classList.remove('hidden');
+    };
+
     reader.readAsDataURL(file);
-    // Set file in input if dropped
+
     const dt = new DataTransfer();
     dt.items.add(file);
     fileInput.files = dt.files;

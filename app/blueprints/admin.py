@@ -9,7 +9,10 @@ import cloudinary.uploader
 
 admin = Blueprint('admin', __name__)
 
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+ALLOWED_EXTENSIONS = {
+    'png', 'jpg', 'jpeg', 'gif', 'webp',
+    'mp4', 'mov', 'avi', 'webm'
+}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -102,24 +105,37 @@ def upload_image():
         return redirect(url_for('admin.gallery'))
 
     try:
-        result = cloudinary.uploader.upload(file, folder="gracelawn/gallery")
+        is_video = file.filename.lower().endswith(('mp4', 'mov', 'avi', 'webm'))
+
+        if is_video:
+            result = cloudinary.uploader.upload(
+                file,
+                resource_type="video",
+                folder="gracelawn/gallery"
+            )
+        else:
+            result = cloudinary.uploader.upload(
+                file,
+                folder="gracelawn/gallery"
+            )
 
         item = GalleryItem(
             image_url=result.get('secure_url'),
             public_id=result.get('public_id'),
             label=label,
             category=category,
-            caption=caption
+            caption=caption,
+            media_type="video" if is_video else "image"
         )
 
         db.session.add(item)
         db.session.commit()
 
-        flash('Image uploaded successfully!', 'success')
+        flash('Upload successful!', 'success')
 
     except Exception as e:
         print("UPLOAD ERROR:", e)
-        flash(str(e), 'error')
+        flash('Upload failed. Try again.', 'error')
 
     return redirect(url_for('admin.gallery'))
 
@@ -151,7 +167,7 @@ def del_gallery_item(item_id):
     if item:
         try:
             if item.public_id:
-                cloudinary.uploader.destroy(item.public_id)
+                cloudinary.uploader.destroy(item.public_id, resource_type="video")
         except:
             pass
 

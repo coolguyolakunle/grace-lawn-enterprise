@@ -79,9 +79,7 @@ def delete_message(msg_id):
         db.session.commit()
 
 
-# ─────────────────────────────────────────────
 # SITE CONTENT (SINGLE ROW TABLE)
-# ─────────────────────────────────────────────
 class SiteContent(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
@@ -103,8 +101,8 @@ class SiteContent(db.Model):
 
 
 DEFAULT_CONTENT = {
-    "hero_title": "Grace Lawn",
-    "hero_subtitle": "Enterprise",
+    "hero_title": "GraceLawn Enterprise",
+    "hero_subtitle": "The Pig Depot",
     "hero_tagline": "First-class pig farming rooted in excellence...",
     "hero_image": "",
     "about_intro": "Gracelawn is a first-class pig farm in Lagos.",
@@ -145,6 +143,7 @@ class GalleryItem(db.Model):
 
     image_url = db.Column(db.Text, nullable=False)
     public_id = db.Column(db.String(255), nullable=False)
+    media_type = db.Column(db.String(10), default='image')
 
     label = db.Column(db.String(255))
     category = db.Column(db.String(100))
@@ -157,13 +156,14 @@ def get_gallery():
     return GalleryItem.query.order_by(GalleryItem.date.desc()).all()
 
 
-def add_gallery_item(image_url, public_id, label, category, caption=""):
+def add_gallery_item(image_url, public_id, label, category, caption="", media_type="image"):
     item = GalleryItem(
         image_url=image_url,
         public_id=public_id,
         label=label,
         category=category,
         caption=caption,
+        media_type=media_type
     )
     db.session.add(item)
     db.session.commit()

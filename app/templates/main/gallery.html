@@ -36,8 +36,15 @@
                 data-label="{{ item.label }}"
                 data-category="{{ item.category }}"
                 data-caption="{{ item.caption }}">
+            {% if item.media_type == 'video' %}
+            <video class="w-full h-full object-cover" controls>
+              <source src="{{ item.image_url }}" type="video/mp4">
+              Your browser does not support video.
+            </video>
+            {% else %}
             <img src="{{ item.image_url }}" alt="{{ item.label }}"
-                 class="w-full h-full object-cover gallery-img"/>
+                class="w-full h-full object-cover gallery-img"/>
+            {% endif %}
             <div class="absolute inset-0 bg-deep-green/75 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
               <div class="text-center text-white px-3">
                 <i class="fas fa-expand text-2xl mb-2 block"></i>
@@ -109,39 +116,61 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const items = document.querySelectorAll('.gallery-item');
   const lightbox = document.getElementById('lightbox');
-  const lightboxImg = document.getElementById('lightbox-img');
-  const closeBtn = document.getElementById('lightbox-close');
+
+  function openLightbox(contentHtml) {
+    lightbox.innerHTML = `
+      <button id="lightbox-close" class="absolute top-6 right-6 text-white text-3xl">&times;</button>
+      ${contentHtml}
+    `;
+
+    lightbox.classList.remove('hidden');
+    lightbox.classList.add('flex');
+
+    document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+  }
+
+  function closeLightbox() {
+    lightbox.classList.add('hidden');
+    lightbox.classList.remove('flex');
+    lightbox.innerHTML = "";
+  }
 
   items.forEach(item => {
     item.addEventListener('click', () => {
 
       const img = item.querySelector('img.gallery-img');
-      if (!img) return;
+      const video = item.querySelector('video');
 
-      lightboxImg.src = img.src;
+      // 🎥 VIDEO HANDLING
+      if (video) {
+        const src = video.querySelector('source')?.src;
 
-      lightbox.classList.remove('hidden');
-      lightbox.classList.add('flex');
+        openLightbox(`
+          <video controls autoplay class="max-w-[90%] max-h-[90%] object-contain rounded-lg shadow-lg">
+            <source src="${src}" type="video/mp4">
+          </video>
+        `);
+        return;
+      }
+
+      // 🖼 IMAGE HANDLING
+      if (img) {
+        openLightbox(`
+          <img src="${img.src}" class="max-w-[90%] max-h-[90%] object-contain rounded-lg shadow-lg">
+        `);
+      }
+
     });
   });
 
-  function closeLightbox() {
-    lightbox.classList.add('hidden');
-    lightbox.classList.remove('flex');
-  }
-
-  closeBtn.addEventListener('click', closeLightbox);
-
+  // close on outside click
   lightbox.addEventListener('click', (e) => {
-    if (e.target === lightbox) {
-      closeLightbox();
-    }
+    if (e.target === lightbox) closeLightbox();
   });
 
+  // ESC key
   document.addEventListener('keydown', (e) => {
-    if (e.key === "Escape") {
-      closeLightbox();
-    }
+    if (e.key === "Escape") closeLightbox();
   });
 
 });
